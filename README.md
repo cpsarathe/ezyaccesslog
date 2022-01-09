@@ -9,5 +9,8 @@
 
 # Database based persistence can help you analyzing and agreegating access log data as per our use cases.
 
-## POST http://localhost:8080/ezyaccess/upload
-upload access log file with key name "file"
+## POST http://localhost:8080/ezyaccess/upload?appName=admin1
+upload access log file with key name "file" , this should be a multipart file upload
+
+## curl command to upload file
+curl -X POST -u "user:user" --form file=@"D:\aa\bb\logs\aa-access-log\09.01.2022\admin1-access-log\access_log.2021-11-01.log" "http://localhost:8080/ezyaccess/upload?appName=admin1"

@@ -5,6 +5,7 @@ import com.ezy.access.repository.AccessLogRepository;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,34 +22,67 @@ import java.util.stream.Collectors;
 @CommonsLog
 public class AccessLogServiceImpl implements AccessLogService {
 
+    @Value("${ezyaccess.log.persist.batch.size:500}")
+    protected int logPersistBatchSize;
+
     @Autowired
     private AccessLogRepository accessLogRepository;
 
-    public void save(MultipartFile multipartFile) throws IOException {
-        InputStream inputStream = multipartFile.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        List<String> list = bufferedReader.lines().collect(Collectors.toList());
-        List<AccessLogModel> accessLogModels = new ArrayList<>();
-        for (String line : list) {
-            List<String> copyList = parseLineAndArrangeOrder(line);
-            AccessLogModel accessLogModel = AccessLogModel.builder()
-                    .hRemoteHost(copyList.get(0))
-                    .tDateTime(convertStringToDate(copyList.get(2), "dd/MMM/yyyy:hh:mm:ss"))
-                    .rRequestUri(getUri(copyList))
-                    .sHttpStatusCode(Integer.valueOf(copyList.get(7)))
-                    .bResponseSize(copyList.get(8).equals("-") ? 0 : Integer.valueOf(copyList.get(8)))
-                    .iXForwardedFor(copyList.get(9))
-                    .iXForwardedProto(copyList.get(10))
-                    .createdDate(Calendar.getInstance().getTime())
-                    .build();
-            accessLogModels.add(accessLogModel);
+    public int save(MultipartFile multipartFile, String appName) {
+        int totalPersisted = 0;
+        try {
+            log.info("file upload started with filename " + multipartFile.getOriginalFilename() + " for appName " + appName);
+            InputStream inputStream = multipartFile.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            List<String> list = bufferedReader.lines().collect(Collectors.toList());
+            log.info("records to be persisted " + list.size());
+            List<AccessLogModel> accessLogModels = new ArrayList<>();
+            int count = 0;
+            for (String line : list) {
+                List<String> copyList = parseLineAndArrangeOrder(line);
+                AccessLogModel accessLogModel = AccessLogModel.builder()
+                        .hRemoteHost(copyList.get(0))
+                        .tDateTime(convertStringToDate(copyList.get(2), "dd/MMM/yyyy:hh:mm:ss"))
+                        .rRequestUri(getUri(copyList))
+                        .sHttpStatusCode(Integer.valueOf(copyList.get(7)))
+                        .bResponseSize(copyList.get(8).equals("-") ? 0 : Integer.valueOf(copyList.get(8)))
+                        .iXForwardedFor(copyList.get(9))
+                        .iXForwardedProto(copyList.get(10))
+                        .createdDate(Calendar.getInstance().getTime())
+                        .appName(appName)
+                        .fileName(multipartFile.getOriginalFilename())
+                        .build();
+                accessLogModels.add(accessLogModel);
+                count++;
+                if (count == logPersistBatchSize) {
+                    accessLogRepository.saveAll(accessLogModels);
+                    accessLogModels.clear();
+                    totalPersisted += count;
+                    log.info("persisted so far " + totalPersisted);
+                    count = 0;
+                }
+            }
+
+            if(accessLogModels.size() > 0) {
+                log.info("records still exist not in multiple of " + logPersistBatchSize);
+                accessLogRepository.saveAll(accessLogModels);
+                accessLogModels.clear();
+                totalPersisted += count;
+                log.info("persisted so far " + totalPersisted);
+            }
+
+            list = null; //hi gc
+
+        } catch (Exception ex) {
+            log.error("Error saving access log with fileName: " + multipartFile.getName() , ex);
         }
-        accessLogRepository.saveAll(accessLogModels);
+        log.info("finished saving access log");
+        return totalPersisted;
     }
 
     private String getUri(List<String> copyList) {
         String s = copyList.get(4) + " " + copyList.get(5) + " " + copyList.get(6);
-        return s.length()>255 ? s.substring(0, 255) : s;
+        return s.length() > 255 ? s.substring(0, 255) : s;
     }
 
     private List<String> parseLineAndArrangeOrder(String line) {

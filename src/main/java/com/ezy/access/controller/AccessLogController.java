@@ -27,9 +27,10 @@ public class AccessLogController {
 
     @PostMapping(value = "/upload")
     @ResponseBody
-    public APIResponse<String> upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
-        accessLogService.save(multipartFile);
-        return apiResponseWrapper.wrapResponse(HttpStatus.OK.value(), ResponseStatusEnum.SUCCESS, "successful",
+    public APIResponse<String> upload(@RequestParam("file") MultipartFile multipartFile,
+                                      @RequestParam(name = "appName") String appName) {
+        int totalPersisted = accessLogService.save(multipartFile, appName);
+        return apiResponseWrapper.wrapResponse(HttpStatus.OK.value(), ResponseStatusEnum.SUCCESS, "successfully saved " + totalPersisted,
                 null);
     }
 }

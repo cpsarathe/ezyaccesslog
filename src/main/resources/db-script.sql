@@ -18,3 +18,13 @@ KEY `access_log_r_request_uri_idx` (`r_request_uri`),
 KEY `access_log_s_http_status_code_idx` (`s_http_status_code`),
 KEY `access_log_t_date_time_idx` (`t_date_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ezyaccess`.`access_log`
+    ADD COLUMN `app_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '' AFTER `created_date`;
+
+ALTER TABLE `ezyaccess`.`access_log`
+    ADD INDEX `access_log_app_name_idx` (`app_name` ASC)  COMMENT '';
+
+ALTER TABLE `ezyaccess`.`access_log`
+    ADD COLUMN `file_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '' AFTER `app_name`,
+ADD INDEX `access_log_file_name_idx` (`file_name` ASC)  COMMENT '';

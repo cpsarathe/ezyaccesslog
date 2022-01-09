@@ -39,5 +39,9 @@ public class AccessLogModel {
     protected String iXForwardedProto;
     @Column(name = "created_date")
     protected Date createdDate;
+    @Column(name = "app_name")
+    protected String appName;
+    @Column(name = "file_name")
+    protected String fileName;
 
 }
