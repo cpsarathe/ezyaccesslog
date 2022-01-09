@@ -15,4 +15,4 @@ upload access log file with key name "file" , this should be a multipart file up
 ## curl command to upload file
 curl -X POST -u "user:user" --form file=@"D:\aa\bb\logs\aa-access-log\09.01.2022\admin1-access-log\access_log.2021-11-01.log" "http://localhost:8080/ezyaccess/upload?appName=admin1"
 
-#Ask me for details cp.sarathe@gmail.com
+# Ask me for details cp.sarathe@gmail.com
