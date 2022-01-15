@@ -16,3 +16,8 @@ upload access log file with key name "file" , this should be a multipart file up
 curl -X POST -u "user:user" --form file=@"D:\aa\bb\logs\aa-access-log\09.01.2022\admin1-access-log\access_log.2021-11-01.log" "http://localhost:8080/ezyaccess/upload?appName=admin1"
 
 # Ask me for details cp.sarathe@gmail.com
+
+### ==================================================================
+
+### Parallel Development for V2 is started to support %h,%l,%t,%u,"%r",%s,%b,%{X-Forwarded-For}i,%{X-Forwarded-Proto}i,%D,%{Host}i 
+### This supports dynamic handling of parsing pattern and log file instead of doing index based

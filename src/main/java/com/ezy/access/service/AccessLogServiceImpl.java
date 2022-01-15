@@ -1,7 +1,9 @@
 package com.ezy.access.service;
 
 import com.ezy.access.model.AccessLogModel;
+import com.ezy.access.model.AccessLogModelV2;
 import com.ezy.access.repository.AccessLogRepository;
+import com.ezy.access.repository.AccessLogV2Repository;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,9 @@ public class AccessLogServiceImpl implements AccessLogService {
 
     @Autowired
     private AccessLogRepository accessLogRepository;
+
+    @Autowired
+    private AccessLogV2Repository accessLogV2Repository;
 
     public int save(MultipartFile multipartFile, String appName) {
         int totalPersisted = 0;
@@ -63,7 +67,7 @@ public class AccessLogServiceImpl implements AccessLogService {
                 }
             }
 
-            if(accessLogModels.size() > 0) {
+            if (!accessLogModels.isEmpty()) {
                 log.info("records still exist not in multiple of " + logPersistBatchSize);
                 accessLogRepository.saveAll(accessLogModels);
                 accessLogModels.clear();
@@ -74,11 +78,19 @@ public class AccessLogServiceImpl implements AccessLogService {
             list = null; //hi gc
 
         } catch (Exception ex) {
-            log.error("Error saving access log with fileName: " + multipartFile.getName() , ex);
+            log.error("Error saving access log with fileName: " + multipartFile.getName(), ex);
         }
         log.info("finished saving access log");
         return totalPersisted;
     }
+
+    @Override
+    public int saveAll(List<AccessLogModelV2> accessLogModelV2List) {
+        //TODO - Perform commit in batches
+        accessLogV2Repository.saveAll(accessLogModelV2List);
+        return accessLogModelV2List.size();
+    }
+
 
     private String getUri(List<String> copyList) {
         String s = copyList.get(4) + " " + copyList.get(5) + " " + copyList.get(6);
