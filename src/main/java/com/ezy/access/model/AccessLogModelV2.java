@@ -91,6 +91,9 @@ public class AccessLogModelV2 {
     @Column(name = "i_x_forwarded_proto")
     protected String iXForwardedProto;
 
+    @Column(name = "i_user_agent")
+    protected String iUserAgent;
+
     @Column(name = "i_host_name")
     protected String iHostName;
 

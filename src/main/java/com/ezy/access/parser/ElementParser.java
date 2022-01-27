@@ -19,4 +19,28 @@ public interface ElementParser {
         }
         return x;
     }
+
+    default String[] splitLinePreservingQuotes(String line, LogFilePatternInfo logFilePatternInfo) {
+        String[] elements = line.split(logFilePatternInfo.getPatternSplitter() + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+//        // merge proto
+//        Set<String> set = logFilePatternInfo.getUserDefinedPattern();
+//        int index = 0;
+//        for (String s : set) {
+//            if (s.contains(IncomingHeaderXForwardedForElementParser.INCOMING_HEADER_X_FORWARDED_FOR_DEF_CHAR)) {
+//                break;
+//            }
+//            index++;
+//        }
+//        String[] newElements = new String[elements.length - 1];
+//        int m = 0;
+//        for (int x = 0; x <= newElements.length; x++) {
+//            if (x == index) {
+//                newElements[m++] = elements[x] + "," + elements[x + 1];
+//                x++;
+//            } else {
+//                newElements[m++] = elements[x];
+//            }
+//        }
+        return elements;
+    }
 }

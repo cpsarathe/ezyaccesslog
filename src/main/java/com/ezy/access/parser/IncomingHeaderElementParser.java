@@ -16,7 +16,7 @@ public class IncomingHeaderElementParser implements ElementParser {
     public void parse(String line, LogFilePatternInfo logFilePatternInfo, AccessLogModelV2 accessLogModel) {
         if (logFilePatternInfo.getUserDefinedPattern().contains(INCOMING_HEADER_DEF_CHAR)) {
             int index = getIndex(logFilePatternInfo.getUserDefinedPattern(), INCOMING_HEADER_DEF_CHAR);
-            String[] elements = line.split(logFilePatternInfo.getPatternSplitter());
+            String[] elements = this.splitLinePreservingQuotes(line,logFilePatternInfo);
             String incomingHeader = elements[index].replace("\"", "");
             accessLogModel.setIXForwardedFor(incomingHeader);
         }

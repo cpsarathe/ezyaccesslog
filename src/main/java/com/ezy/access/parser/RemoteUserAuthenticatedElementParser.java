@@ -16,7 +16,7 @@ public class RemoteUserAuthenticatedElementParser implements ElementParser {
     public void parse(String line, LogFilePatternInfo logFilePatternInfo, AccessLogModelV2 accessLogModel) {
         if (logFilePatternInfo.getUserDefinedPattern().contains(REMOTE_USER_AUTHENTICATED_DEF_CHAR)) {
             int index = getIndex(logFilePatternInfo.getUserDefinedPattern(), REMOTE_USER_AUTHENTICATED_DEF_CHAR);
-            String[] elements = line.split(logFilePatternInfo.getPatternSplitter());
+            String[] elements = this.splitLinePreservingQuotes(line,logFilePatternInfo);
             String remoteUserAuthenticated = elements[index].replace("\"", "");
             accessLogModel.setRemoteUserAuthenticated(remoteUserAuthenticated);
         }

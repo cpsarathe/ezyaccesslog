@@ -29,9 +29,12 @@ public class ParserRuleConfig {
         parseRuleConfigSet.add("b");
         parseRuleConfigSet.add("i");
         parseRuleConfigSet.add("{X-Forwarded-For}i".toLowerCase(Locale.ROOT));
+//        parseRuleConfigSet.add("{X-Forwarded-For-Dummy}i".toLowerCase(Locale.ROOT));
         parseRuleConfigSet.add("{X-Forwarded-Proto}i".toLowerCase(Locale.ROOT));
         parseRuleConfigSet.add("{Host}i".toLowerCase(Locale.ROOT));
         parseRuleConfigSet.add("D");
+        parseRuleConfigSet.add("S");
+        parseRuleConfigSet.add("{User-Agent}i".toLowerCase(Locale.ROOT));
     }
 
     public Set<String> getParseRuleConfigSet() {

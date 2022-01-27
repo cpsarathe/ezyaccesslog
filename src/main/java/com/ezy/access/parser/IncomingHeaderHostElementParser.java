@@ -18,7 +18,7 @@ public class IncomingHeaderHostElementParser implements ElementParser {
     public void parse(String line, LogFilePatternInfo logFilePatternInfo, AccessLogModelV2 accessLogModel) {
         if (logFilePatternInfo.getUserDefinedPattern().contains(INCOMING_HEADER_HOST_DEF_CHAR)) {
             int index = getIndex(logFilePatternInfo.getUserDefinedPattern(), INCOMING_HEADER_HOST_DEF_CHAR);
-            String[] elements = line.split(logFilePatternInfo.getPatternSplitter());
+            String[] elements = this.splitLinePreservingQuotes(line,logFilePatternInfo);
             String hostName = elements[index].replace("\"", "");
             accessLogModel.setIHostName(hostName);
         }

@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * parse pattern passed from UI
+ * parse pattern passed from UI e.g
  * e.g. %h %l %t %u "%r" %s %b %{X-Forwarded-For}i %{X-Forwarded-Proto}i
  */
 @Component

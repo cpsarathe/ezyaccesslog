@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @CommonsLog
-public class AccessLogServiceImpl implements AccessLogService {
+public class AccessLogPersistenceServiceImpl implements AccessLogPersistenceService {
 
     @Value("${ezyaccess.log.persist.batch.size:500}")
     protected int logPersistBatchSize;
@@ -86,8 +86,19 @@ public class AccessLogServiceImpl implements AccessLogService {
 
     @Override
     public int saveAll(List<AccessLogModelV2> accessLogModelV2List) {
-        //TODO - Perform commit in batches
-        accessLogV2Repository.saveAll(accessLogModelV2List);
+        int totalRecords = accessLogModelV2List.size();
+        int total = totalRecords;
+        log.info("total records to process " + total);
+        int  start = 0;
+        int  end = totalRecords > logPersistBatchSize ? logPersistBatchSize : totalRecords ;
+        while(totalRecords > 0 && start < end) {
+            List<AccessLogModelV2> subList = accessLogModelV2List.subList(start,end);
+            accessLogV2Repository.saveAll(subList);
+            log.info("start:"+start+" end:"+end+" persisted:"+subList.size() + " remaining:"+totalRecords );
+            start = start + logPersistBatchSize + 1;
+            end = (start + logPersistBatchSize) > total ? total - 1 :(start + logPersistBatchSize) ;
+            totalRecords = totalRecords - logPersistBatchSize;
+        }
         return accessLogModelV2List.size();
     }
 

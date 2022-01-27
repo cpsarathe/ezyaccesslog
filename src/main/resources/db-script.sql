@@ -50,6 +50,7 @@ CREATE TABLE `access_log_v2` (
                                  `t_date_time` datetime DEFAULT NULL,
                                  `u_remote_user_authenticated` varchar(255) DEFAULT NULL,
                                  `U_request_url_path`  varchar(255) DEFAULT NULL,
+                                 `i_user_agent`  varchar(255) DEFAULT NULL,
                                  `v_local_server_name`  varchar(255) DEFAULT NULL,
                                  `D_time_to_process_request`  int(16) DEFAULT NULL,
                                  `T_time_to_process_request`  int(16) DEFAULT NULL,
@@ -71,4 +72,20 @@ CREATE TABLE `access_log_v2` (
                                  KEY `access_log_v2_s_http_status_code_idx` (`s_status_code`),
                                  KEY `access_log_v2_t_date_time_idx` (`t_date_time`),
                                  KEY `access_log_v2_i_host_name_idx` (`i_host_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `access_log_error` (
+                                    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                    `log_record` varchar(255) DEFAULT NULL,
+                                    `created_date` datetime DEFAULT NULL,
+                                    `app_name`  varchar(255) DEFAULT NULL,
+                                    `file_name` varchar(255) DEFAULT NULL,
+                                    `request_key` varchar(255) DEFAULT -1,
+                                    PRIMARY KEY (`id`),
+                                    KEY `access_log_error_idx` (`id`),
+                                    KEY `access_log_error_app_name_idx` (`app_name`),
+                                    KEY `aaccess_log_error_file_name_idx` (`file_name`),
+                                    KEY `aaccess_log_error_request_key_idx` (`request_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

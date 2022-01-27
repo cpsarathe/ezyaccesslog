@@ -16,7 +16,7 @@ public class RemoteLogicUserNameElementParser implements ElementParser {
     public void parse(String line, LogFilePatternInfo logFilePatternInfo, AccessLogModelV2 accessLogModel) {
         if (logFilePatternInfo.getUserDefinedPattern().contains(REQUEST_REMOTE_LOGICAL_USER_NAME_DEF_CHAR)) {
             int index = getIndex(logFilePatternInfo.getUserDefinedPattern(), REQUEST_REMOTE_LOGICAL_USER_NAME_DEF_CHAR);
-            String[] elements = line.split(logFilePatternInfo.getPatternSplitter());
+            String[] elements = this.splitLinePreservingQuotes(line,logFilePatternInfo);
             String remoteUser = elements[index].replace("\"", "");
             accessLogModel.setRemoteUserIdentd(remoteUser);
         }

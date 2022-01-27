@@ -21,7 +21,7 @@ public class DateTimeElementParser implements ElementParser {
     public void parse(String line, LogFilePatternInfo logFilePatternInfo, AccessLogModelV2 accessLogModel) {
         if (logFilePatternInfo.getUserDefinedPattern().contains(REQUEST_DATE_TIME_DEF_CHAR)) {
             int index = getIndex(logFilePatternInfo.getUserDefinedPattern(), REQUEST_DATE_TIME_DEF_CHAR);
-            String[] elements = line.split(logFilePatternInfo.getPatternSplitter());
+            String[] elements = this.splitLinePreservingQuotes(line,logFilePatternInfo);
             String dateTime = elements[index].replace("\"","");
             dateTime = dateTime.replace("[","").replace("[","");
             accessLogModel.setDateTime(convertStringToDate(dateTime, "dd/MMM/yyyy:hh:mm:ss"));
