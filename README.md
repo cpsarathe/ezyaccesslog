@@ -21,3 +21,6 @@ curl -X POST -u "user:user" --form file=@"D:\aa\bb\logs\aa-access-log\09.01.2022
 
 ### Parallel Development for V2 is started to support %h,%l,%t,%u,"%r",%s,%b,%{X-Forwarded-For}i,%{X-Forwarded-Proto}i,%D,%{Host}i 
 ### This supports dynamic handling of parsing pattern and log file instead of doing index based
+
+#Note- useful to explore library for parsing access log
+https://github.com/antlr/antlr4?tab=readme-ov-file
